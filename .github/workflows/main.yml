@@ -1,10 +1,9 @@
 name: Run Python Script on Schedule
 
 on:
-#  schedule:
-#    # runs at 5:30am every day
-#    - cron: "30 5 * * *"
-  workflow_dispatch
+  schedule:
+    # runs at 5:30am every day
+    - cron: "30 5 * * *"
 
 jobs:
   build:
