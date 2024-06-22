@@ -1,5 +1,7 @@
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as bs
+import os
+import time
 import csv
 import re
 from datetime import datetime
@@ -8,6 +10,16 @@ from datetime import datetime
 def make_file_name():
     now = datetime.now()
     return now.strftime("%d-%m-%Y") + '-wnba.csv'
+
+
+def remove_csvs_older_than_n_days(n=7):
+    now = datetime.now()
+    for file in os.listdir():
+        if file.endswith('.csv'):
+            date = file.replace('-wnba.csv', '')
+            date = datetime.strptime(date, "%d-%m-%Y")
+            if (now - date).days > n:
+                os.remove(file)
 
 
 def make_row(rank, tds):
@@ -48,6 +60,7 @@ def main():
             row = make_row(rank, table_data)
             writer.writerow(row)
             rank += 1
+    remove_csvs_older_than_n_days(7)
 
 
 if __name__ == '__main__':
