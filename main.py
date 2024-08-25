@@ -1,7 +1,6 @@
 from urllib.request import urlopen
 from bs4 import BeautifulSoup as bs
 import os
-import time
 import csv
 import re
 from datetime import datetime
@@ -26,13 +25,18 @@ def make_row(rank, tds):
     row = []
     col = 0
     row.append(rank)
+    in_playoffs = False
     for table_data in tds:
         text = table_data.text
         text = re.sub(r'\s+', '', text)
         if col == 0:
             text = re.sub(r'\d+', '', text)
+            if 'Close' in text:
+                text = text.replace('Close', '')
+                in_playoffs = True
         row.append(text)
         col += 1
+    row.append(in_playoffs)
     return row
 
 
@@ -50,6 +54,7 @@ def main():
         headers = ["RANK"]
         for th in table_headers:
             headers.append(th.text)
+        headers.append("PLAYOFFS")
         writer.writerow(headers)
 
         rank = 1
